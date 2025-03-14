@@ -14,7 +14,7 @@ namespace OrderProcessingApp.Domain.Models
         public string ProductName { get; set; }
         public CustomerType CustomerType { get; set; }
         public string DeliveryAddress { get; set; }
-        public string PaymentMethod { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
         public OrderStatus OrderStatus { get; set; }
     }
 }
