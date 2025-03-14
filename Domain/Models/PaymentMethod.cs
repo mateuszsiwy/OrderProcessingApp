@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OrderProcessingApp.Domain.Models
 {
-    enum PaymentMethod
+    public enum PaymentMethod
     {
         CreditCard,
         Cash

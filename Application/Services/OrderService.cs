@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OrderProcessingApp.Application.Services
 {
-    class OrderService : IOrderService
+    public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
         public OrderService(IOrderRepository orderRepository)
@@ -38,7 +38,7 @@ namespace OrderProcessingApp.Application.Services
                 await _orderRepository.UpdateOrderAsync(order);
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -49,20 +49,25 @@ namespace OrderProcessingApp.Application.Services
             try
             {
                 var order = await _orderRepository.GetOrderByIdAsync(orderId);
-                if (order.PaymentMethod == PaymentMethod.Cash && order.Amount >= 2500)
-                {
-                    order.OrderStatus = OrderStatus.ReturnedToClient;
-                }
-                else if (string.IsNullOrEmpty(order.DeliveryAddress))
+
+                if (string.IsNullOrEmpty(order.DeliveryAddress))
                 {
                     order.OrderStatus = OrderStatus.Error;
                     throw new Exception("Delivery address is required");
                 }
 
-                order.OrderStatus = OrderStatus.InStock;
+                if (order.PaymentMethod == PaymentMethod.Cash && order.Amount >= 2500)
+                {
+                    order.OrderStatus = OrderStatus.ReturnedToClient;
+                }
+                else
+                {
+                    order.OrderStatus = OrderStatus.InStock;
+                }
+
                 await _orderRepository.UpdateOrderAsync(order);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

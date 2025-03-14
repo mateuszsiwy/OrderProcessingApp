@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace OrderProcessingApp.Infrastructure.Repositories
 {
-    class OrderRepository : IOrderRepository
+    public class OrderRepository : IOrderRepository
     {
         private readonly OrderProcessingAppDbContext _context;
         private readonly ILogger<OrderRepository> _logger;

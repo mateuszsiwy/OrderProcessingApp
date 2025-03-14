@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OrderProcessingApp.Domain
 {
-    class OrderProcessingAppDbContext : DbContext
+    public class OrderProcessingAppDbContext : DbContext
     {
         public OrderProcessingAppDbContext(DbContextOptions<OrderProcessingAppDbContext> options) : base(options)
         {

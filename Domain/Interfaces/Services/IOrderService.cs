@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OrderProcessingApp.Domain.Interfaces.Services
 {
-    interface IOrderService
+    public interface IOrderService
     {
         Task ProcessOrderToWarehouseAsync(int orderId);
         Task ProcessOrderToShippingAsync(int orderId);

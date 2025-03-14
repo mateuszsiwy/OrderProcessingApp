@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OrderProcessingApp.Domain.Models
 {
-    enum OrderStatus
+    public enum OrderStatus
     {
         New,
         InStock,

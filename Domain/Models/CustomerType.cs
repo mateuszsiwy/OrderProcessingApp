@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OrderProcessingApp.Domain.Models
 {
-    enum CustomerType
+    public enum CustomerType
     {
         Company,
         Individual

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace OrderProcessingApp.Domain.Interfaces.Repositories
 {
-    interface IOrderRepository
+    public interface IOrderRepository
     {
         Task<IEnumerable<Order>> GetOrdersAsync();
         Task<Order> GetOrderByIdAsync(int id);
