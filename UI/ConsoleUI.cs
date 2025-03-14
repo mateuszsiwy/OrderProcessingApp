@@ -26,10 +26,13 @@ namespace OrderProcessingApp.UI
                         new SelectionPrompt<string>()
                             .Title("What do you want to do?")
                             .AddChoices(new[] {
-                            "Add Order", "Get Orders", "Process Order to Shipping", "Process Order to Warehouse", "Exit"
+                            "Add Sample Order", "Add Order", "Get Orders", "Process Order to Shipping", "Process Order to Warehouse", "Exit"
                             }));
                 switch (choice)
                 {
+                    case "Add Sample Order":
+                        await AddSampleOrder();
+                        break;
                     case "Add Order":
                         await AddOrder();
                         break;
@@ -50,6 +53,20 @@ namespace OrderProcessingApp.UI
                 }
             }
             
+        }
+
+        private async Task AddSampleOrder()
+        {
+            var order = new Order
+            {
+                Amount = 1000,
+                ProductName = "Sample Product",
+                CustomerType = CustomerType.Individual,
+                DeliveryAddress = "Sample Address",
+                PaymentMethod = PaymentMethod.Cash,
+                OrderStatus = OrderStatus.New,
+            };
+            await _orderService.AddOrderAsync(order);
         }
 
         private async Task AddOrder()
