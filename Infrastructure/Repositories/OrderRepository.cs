@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OrderProcessingApp.Domain;
+using OrderProcessingApp.Domain.Exceptions;
 using OrderProcessingApp.Domain.Interfaces.Repositories;
 using OrderProcessingApp.Domain.Models;
 using System;
@@ -49,7 +50,7 @@ namespace OrderProcessingApp.Infrastructure.Repositories
                 if (order == null)
                 {
                     _logger.LogWarning($"Cannot delete order. Order with id {id} not found.");
-                    throw new KeyNotFoundException($"Order with id {id} not found.");
+                    throw new OrderNotFoundException(id);
                 }
                 _context.Orders.Remove(order);
                 await _context.SaveChangesAsync();
@@ -69,7 +70,7 @@ namespace OrderProcessingApp.Infrastructure.Repositories
                 if (order == null)
                 {
                     _logger.LogWarning($"Order with id {id} not found.");
-                    throw new KeyNotFoundException($"Order with id {id} not found.");
+                    throw new OrderNotFoundException(id);
                 }
                 return order;
             }

@@ -1,4 +1,5 @@
-﻿using OrderProcessingApp.Domain.Interfaces.Repositories;
+﻿using OrderProcessingApp.Domain.Exceptions;
+using OrderProcessingApp.Domain.Interfaces.Repositories;
 using OrderProcessingApp.Domain.Interfaces.Services;
 using OrderProcessingApp.Domain.Models;
 using System;
@@ -35,26 +36,19 @@ namespace OrderProcessingApp.Application.Services
             
             if(order.OrderStatus != OrderStatus.InStock)
             {
-                throw new InvalidOperationException("Order must be in stock to be processed for shipping ");
+                throw new InvalidOrderStateException("Order must be in stock to be processed for shipping ");
             }
 
             if (order.OrderStatus == OrderStatus.Error || order.OrderStatus == OrderStatus.Closed)
             {
-                throw new InvalidOperationException("Order is not available for shipping");
+                throw new InvalidOrderStateException("Order is not available for shipping");
             }
 
             var previousStatus = order.OrderStatus;
             order.OrderStatus = OrderStatus.InDelivery;
             await _orderRepository.UpdateOrderAsync(order);
 
-            await _orderProcessingHistoryRepository.AddOrderHistoryAsync(new OrderProcessingHistory
-            {
-                OrderId = order.Id,
-                PreviousStatus = previousStatus,
-                NewStatus = order.OrderStatus,
-                Timestamp = DateTime.Now,
-                Information = "Order processed to shipping"
-            });
+            await AddOrderHistoryAsync(order, previousStatus);
         }
 
         public async Task ProcessOrderToWarehouseAsync(int orderId)
@@ -64,7 +58,7 @@ namespace OrderProcessingApp.Application.Services
 
             if(order.OrderStatus == OrderStatus.Error || order.OrderStatus == OrderStatus.Closed)
             {
-                throw new InvalidOperationException("Order is not available for processing");
+                throw new InvalidOrderStateException("Order is not available for processing");
             }
 
             if (string.IsNullOrEmpty(order.DeliveryAddress))
@@ -85,6 +79,11 @@ namespace OrderProcessingApp.Application.Services
 
             await _orderRepository.UpdateOrderAsync(order);
 
+            await AddOrderHistoryAsync(order, previousStatus);
+        }
+
+        private async Task AddOrderHistoryAsync(Order order, OrderStatus previousStatus)
+        {
             await _orderProcessingHistoryRepository.AddOrderHistoryAsync(new OrderProcessingHistory
             {
                 OrderId = order.Id,
