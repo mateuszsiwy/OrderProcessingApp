@@ -15,12 +15,13 @@ namespace OrderProcessingApp
     {
         private Mock<IOrderRepository> _orderRepositoryMock;
         private OrderService _orderService;
+        private Mock<IOrderProcessingHistoryRepository> _orderProcessingHistoryRepositoryMock;
 
         [TestInitialize]
         public void Setup()
         {
             _orderRepositoryMock = new Mock<IOrderRepository>();
-            _orderService = new OrderService(_orderRepositoryMock.Object);
+            _orderService = new OrderService(_orderRepositoryMock.Object, _orderProcessingHistoryRepositoryMock.Object);
         }
 
         [TestMethod]

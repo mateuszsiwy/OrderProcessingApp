@@ -19,40 +19,47 @@ namespace OrderProcessingApp.UI
         
         public async Task Run()
         {
+            AnsiConsole.Markup($"[green]Welcome to Order Processing App[/]\n");
             while (true)
             {
-                Console.WriteLine("Welcome to Order Processing App");
-                var choice = AnsiConsole.Prompt(
-                        new SelectionPrompt<string>()
-                            .Title("What do you want to do?")
-                            .AddChoices(new[] {
-                            "Add Sample Order", "Add Order", "Get Orders", "Process Order to Shipping", "Process Order to Warehouse", "Exit"
-                            }));
-                switch (choice)
+                try
                 {
-                    case "Add Sample Order":
-                        await AddSampleOrder();
-                        break;
-                    case "Add Order":
-                        await AddOrder();
-                        break;
-                    case "Get Orders":
-                        await GetOrders();
-                        break;
-                    case "Process Order to Shipping":
-                        await ProcessOrderToShipping();
-                        break;
-                    case "Process Order to Warehouse":
-                        await ProcessOrderToWarehouse();
-                        break;
-                    case "Exit":
-                        return;
-                    default:
-                        AnsiConsole.Markup("[red]Invalid choice[/]");
-                        break;
+                    
+                    var choice = AnsiConsole.Prompt(
+                            new SelectionPrompt<string>()
+                                .Title("What do you want to do?")
+                                .AddChoices(new[] {
+                            "Add Sample Order", "Add Order", "Get Orders", "Process Order to Shipping", "Process Order to Warehouse", "Exit"
+                                }));
+                    switch (choice)
+                    {
+                        case "Add Sample Order":
+                            await AddSampleOrder();
+                            break;
+                        case "Add Order":
+                            await AddOrder();
+                            break;
+                        case "Get Orders":
+                            await GetOrders();
+                            break;
+                        case "Process Order to Shipping":
+                            await ProcessOrderToShipping();
+                            break;
+                        case "Process Order to Warehouse":
+                            await ProcessOrderToWarehouse();
+                            break;
+                        case "Exit":
+                            return;
+                        default:
+                            AnsiConsole.Markup("[red]Invalid choice[/]");
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AnsiConsole.Markup($"[red]An error occurred: {ex.Message}[/]\n");
                 }
             }
-            
         }
 
         private async Task AddSampleOrder()
@@ -110,7 +117,7 @@ namespace OrderProcessingApp.UI
                 table.AddColumn("Order Status");
                 foreach (var order in orders)
                 {
-                    table.AddRow(order.Id.ToString(), order.Amount.ToString(), order.ProductName, order.CustomerType.ToString(), order.DeliveryAddress, order.PaymentMethod.ToString(), order.OrderStatus.ToString());
+                    table.AddRow(order.Id.ToString(), order.Amount.ToString(), order.ProductName ?? string.Empty, order.CustomerType.ToString(), order.DeliveryAddress ?? string.Empty, order.PaymentMethod.ToString(), order.OrderStatus.ToString());
                 }
                 AnsiConsole.Write(table);
             }
