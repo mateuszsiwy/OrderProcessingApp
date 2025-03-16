@@ -30,9 +30,16 @@ namespace OrderProcessingApp.Application.Services
         {
 
             var order = await _orderRepository.GetOrderByIdAsync(orderId);
+            
+            if(order.OrderStatus != OrderStatus.InStock)
+            {
+                throw new InvalidOperationException("Order must be in stock to be processed for shipping ");
+            }
 
-            await Task.Delay(5000);
-
+            if (order.OrderStatus == OrderStatus.Error || order.OrderStatus == OrderStatus.Closed)
+            {
+                throw new InvalidOperationException("Order is not available for shipping");
+            }
             order.OrderStatus = OrderStatus.InDelivery;
             await _orderRepository.UpdateOrderAsync(order);
 
@@ -43,9 +50,15 @@ namespace OrderProcessingApp.Application.Services
 
             var order = await _orderRepository.GetOrderByIdAsync(orderId);
 
+            if(order.OrderStatus == OrderStatus.Error || order.OrderStatus == OrderStatus.Closed)
+            {
+                throw new InvalidOperationException("Order is not available for processing");
+            }
+
             if (string.IsNullOrEmpty(order.DeliveryAddress))
             {
                 order.OrderStatus = OrderStatus.Error;
+                await _orderRepository.UpdateOrderAsync(order);
                 throw new Exception("Delivery address is required");
             }
 
