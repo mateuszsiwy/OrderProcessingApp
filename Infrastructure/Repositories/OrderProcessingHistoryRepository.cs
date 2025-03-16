@@ -68,6 +68,11 @@ namespace OrderProcessingApp.Infrastructure.Repositories
         {
             try
             {
+                var order = await _context.Orders.FindAsync(orderId);
+                if (order == null)
+                {
+                    throw new OrderNotFoundException(orderId);
+                }
                 var orderProcessingHistory = await _context.OrderProcessingHistories.FindAsync(orderId);
                 if (orderProcessingHistory == null)
                 {
