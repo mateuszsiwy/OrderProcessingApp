@@ -12,9 +12,11 @@ namespace OrderProcessingApp.Application.Services
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
-        public OrderService(IOrderRepository orderRepository)
+        private readonly IOrderProcessingHistoryRepository _orderProcessingHistoryRepository;
+        public OrderService(IOrderRepository orderRepository, IOrderProcessingHistoryRepository orderProcessingHistoryRepository)
         {
             _orderRepository = orderRepository;
+            _orderProcessingHistoryRepository = orderProcessingHistoryRepository;
         }
         public async Task AddOrderAsync(Order order)
         {
@@ -40,9 +42,19 @@ namespace OrderProcessingApp.Application.Services
             {
                 throw new InvalidOperationException("Order is not available for shipping");
             }
+
+            var previousStatus = order.OrderStatus;
             order.OrderStatus = OrderStatus.InDelivery;
             await _orderRepository.UpdateOrderAsync(order);
 
+            await _orderProcessingHistoryRepository.AddOrderHistoryAsync(new OrderProcessingHistory
+            {
+                OrderId = order.Id,
+                PreviousStatus = previousStatus,
+                NewStatus = order.OrderStatus,
+                Timestamp = DateTime.Now,
+                Information = "Order processed to shipping"
+            });
         }
 
         public async Task ProcessOrderToWarehouseAsync(int orderId)
@@ -61,7 +73,7 @@ namespace OrderProcessingApp.Application.Services
                 await _orderRepository.UpdateOrderAsync(order);
                 throw new Exception("Delivery address is required");
             }
-
+            var previousStatus = order.OrderStatus;
             if (order.PaymentMethod == PaymentMethod.Cash && order.Amount >= 2500)
             {
                 order.OrderStatus = OrderStatus.ReturnedToClient;
@@ -73,6 +85,14 @@ namespace OrderProcessingApp.Application.Services
 
             await _orderRepository.UpdateOrderAsync(order);
 
+            await _orderProcessingHistoryRepository.AddOrderHistoryAsync(new OrderProcessingHistory
+            {
+                OrderId = order.Id,
+                PreviousStatus = previousStatus,
+                NewStatus = order.OrderStatus,
+                Timestamp = DateTime.Now,
+                Information = "Order processed to warehouse"
+            });
         }
     }
 }

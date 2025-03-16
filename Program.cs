@@ -20,6 +20,7 @@ services.AddDbContext<OrderProcessingAppDbContext>(options =>
 services.AddLogging(configure => configure.AddConsole());
 services.AddScoped<IOrderRepository, OrderRepository>();
 services.AddScoped<IOrderService, OrderService>();
+services.AddScoped<IOrderProcessingHistoryRepository, OrderProcessingHistoryRepository>();
 services.AddScoped<ConsoleUI>();
 
 var serviceProvider = services.BuildServiceProvider();

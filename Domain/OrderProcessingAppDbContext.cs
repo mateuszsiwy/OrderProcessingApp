@@ -16,6 +16,6 @@ namespace OrderProcessingApp.Domain
         }
 
         public DbSet<Order> Orders { get; set; }
-
+        public DbSet<OrderProcessingHistory> OrderProcessingHistories { get; set; }
     }
 }
