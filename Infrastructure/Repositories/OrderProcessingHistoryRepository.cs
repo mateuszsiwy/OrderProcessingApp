@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OrderProcessingApp.Domain;
+using OrderProcessingApp.Domain.Exceptions;
 using OrderProcessingApp.Domain.Interfaces.Repositories;
 using OrderProcessingApp.Domain.Models;
 using System;
@@ -44,6 +45,11 @@ namespace OrderProcessingApp.Infrastructure.Repositories
         {
             try
             {
+                var order = await _context.Orders.FindAsync(orderId);
+                if (order == null)
+                {
+                    throw new OrderNotFoundException(orderId);
+                }
                 var orderProcessingHistories = await _context.OrderProcessingHistories.Where(x => x.OrderId == orderId).ToListAsync();
                 if (orderProcessingHistories == null)
                 {

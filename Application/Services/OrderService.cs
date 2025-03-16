@@ -60,7 +60,10 @@ namespace OrderProcessingApp.Application.Services
             {
                 throw new InvalidOrderStateException("Order is not available for processing");
             }
-
+            if (order.OrderStatus == OrderStatus.InDelivery)
+            {
+                throw new InvalidOrderStateException("Order cannot be processed to warehouse while it is in delivery.");
+            }
             if (string.IsNullOrEmpty(order.DeliveryAddress))
             {
                 order.OrderStatus = OrderStatus.Error;

@@ -21,6 +21,7 @@ namespace OrderProcessingApp
         public void Setup()
         {
             _orderRepositoryMock = new Mock<IOrderRepository>();
+            _orderProcessingHistoryRepositoryMock = new Mock<IOrderProcessingHistoryRepository>();
             _orderService = new OrderService(_orderRepositoryMock.Object, _orderProcessingHistoryRepositoryMock.Object);
         }
 
