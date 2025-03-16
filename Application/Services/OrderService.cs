@@ -28,49 +28,38 @@ namespace OrderProcessingApp.Application.Services
 
         public async Task ProcessOrderToShippingAsync(int orderId)
         {
-            try
-            {
-                var order = await _orderRepository.GetOrderByIdAsync(orderId);
-                
-                await Task.Delay(5000);
 
-                order.OrderStatus = OrderStatus.InDelivery;
-                await _orderRepository.UpdateOrderAsync(order);
+            var order = await _orderRepository.GetOrderByIdAsync(orderId);
 
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            await Task.Delay(5000);
+
+            order.OrderStatus = OrderStatus.InDelivery;
+            await _orderRepository.UpdateOrderAsync(order);
+
         }
 
         public async Task ProcessOrderToWarehouseAsync(int orderId)
         {
-            try
+
+            var order = await _orderRepository.GetOrderByIdAsync(orderId);
+
+            if (string.IsNullOrEmpty(order.DeliveryAddress))
             {
-                var order = await _orderRepository.GetOrderByIdAsync(orderId);
-
-                if (string.IsNullOrEmpty(order.DeliveryAddress))
-                {
-                    order.OrderStatus = OrderStatus.Error;
-                    throw new Exception("Delivery address is required");
-                }
-
-                if (order.PaymentMethod == PaymentMethod.Cash && order.Amount >= 2500)
-                {
-                    order.OrderStatus = OrderStatus.ReturnedToClient;
-                }
-                else
-                {
-                    order.OrderStatus = OrderStatus.InStock;
-                }
-
-                await _orderRepository.UpdateOrderAsync(order);
+                order.OrderStatus = OrderStatus.Error;
+                throw new Exception("Delivery address is required");
             }
-            catch (Exception)
+
+            if (order.PaymentMethod == PaymentMethod.Cash && order.Amount >= 2500)
             {
-                throw;
+                order.OrderStatus = OrderStatus.ReturnedToClient;
             }
+            else
+            {
+                order.OrderStatus = OrderStatus.InStock;
+            }
+
+            await _orderRepository.UpdateOrderAsync(order);
+
         }
     }
 }
