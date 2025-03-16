@@ -24,12 +24,14 @@ Aplikacja konsolowa umożliwiająca procesowanie zamówień z obsługą różnyc
 
 ## Właściwości zamówienia
 
+- ID
 - Kwota zamówienia
 - Nazwa produktu
 - Typ klienta (firma, osoba fizyczna)
 - Adres dostawy
 - Sposób płatności (karta, gotówka przy odbiorze)
-
+- Status zamówienia
+  
 ## Warunki biznesowe
 
 1. Zamówienia za nie mniej niż 2500 PLN z płatnością gotówką przy odbiorze zostają zwrócone do klienta przy próbie przekazania do magazynu.
