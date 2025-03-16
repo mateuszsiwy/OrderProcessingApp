@@ -81,6 +81,11 @@ namespace OrderProcessingApp.Application.Services
 
             await AddOrderHistoryAsync(order, previousStatus);
         }
+        
+        public async Task<IEnumerable<OrderProcessingHistory>> GetOrderHistoryAsync(int orderId)
+        {
+            return await _orderProcessingHistoryRepository.GetOrderHistoriesAsync(orderId);
+        }
 
         private async Task AddOrderHistoryAsync(Order order, OrderStatus previousStatus)
         {
@@ -89,9 +94,10 @@ namespace OrderProcessingApp.Application.Services
                 OrderId = order.Id,
                 PreviousStatus = previousStatus,
                 NewStatus = order.OrderStatus,
-                Timestamp = DateTime.Now,
+                Timestamp = DateTime.UtcNow,
                 Information = "Order processed to warehouse"
             });
         }
+
     }
 }

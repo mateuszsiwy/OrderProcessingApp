@@ -13,5 +13,6 @@ namespace OrderProcessingApp.Domain.Interfaces.Services
         Task ProcessOrderToShippingAsync(int orderId);
         Task AddOrderAsync(Order order);
         Task<IEnumerable<Order>> GetOrdersAsync();
+        Task<IEnumerable<OrderProcessingHistory>> GetOrderHistoryAsync(int orderId);
     }
 }

@@ -29,7 +29,7 @@ namespace OrderProcessingApp.UI
                             new SelectionPrompt<string>()
                                 .Title("What do you want to do?")
                                 .AddChoices(new[] {
-                            "Add Sample Order", "Add Order", "Get Orders", "Process Order to Shipping", "Process Order to Warehouse", "Exit"
+                            "Add Sample Order", "Add Order", "Get Orders", "Process Order to Shipping", "Process Order to Warehouse", "Get Order History", "Exit"
                                 }));
                     switch (choice)
                     {
@@ -47,6 +47,9 @@ namespace OrderProcessingApp.UI
                             break;
                         case "Process Order to Warehouse":
                             await ProcessOrderToWarehouse();
+                            break;
+                        case "Get Order History":
+                            await GetOrderHistory();
                             break;
                         case "Exit":
                             return;
@@ -139,6 +142,31 @@ namespace OrderProcessingApp.UI
             var orderId = AnsiConsole.Ask<int>("Enter Order Id:");
             await _orderService.ProcessOrderToWarehouseAsync(orderId);
             AnsiConsole.Markup("[green]Order processed to warehouse[/]\n");
+        }
+
+        private async Task GetOrderHistory()
+        {
+            var orderId = AnsiConsole.Ask<int>("Enter Order Id:");
+            var orderHistories = await _orderService.GetOrderHistoryAsync(orderId);
+            if (orderHistories.Any())
+            {
+                var table = new Table();
+                table.AddColumn("Id");
+                table.AddColumn("Order Id");
+                table.AddColumn("Previous Status");
+                table.AddColumn("New Status");
+                table.AddColumn("Created At");
+                foreach (var orderHistory in orderHistories)
+                {
+                    var localTimestamp = orderHistory.Timestamp.ToLocalTime();
+                    table.AddRow(orderHistory.Id.ToString(), orderHistory.OrderId.ToString(), orderHistory.PreviousStatus.ToString(), orderHistory.NewStatus.ToString(), localTimestamp.ToString());
+                }
+                AnsiConsole.Write(table);
+            }
+            else
+            {
+                AnsiConsole.Markup("[red]No order histories found[/]\n");
+            }
         }
     }
 }

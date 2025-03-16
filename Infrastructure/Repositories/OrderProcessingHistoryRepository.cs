@@ -40,11 +40,11 @@ namespace OrderProcessingApp.Infrastructure.Repositories
             }
         }
 
-        public async Task<IEnumerable<OrderProcessingHistory>> GetOrderHistoriesAsync()
+        public async Task<IEnumerable<OrderProcessingHistory>> GetOrderHistoriesAsync(int orderId)
         {
             try
             {
-                var orderProcessingHistories = await _context.OrderProcessingHistories.ToListAsync();
+                var orderProcessingHistories = await _context.OrderProcessingHistories.Where(x => x.OrderId == orderId).ToListAsync();
                 if (orderProcessingHistories == null)
                 {
                     throw new KeyNotFoundException("Order processing histories not found");

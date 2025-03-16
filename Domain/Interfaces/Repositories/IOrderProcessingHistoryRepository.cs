@@ -10,7 +10,7 @@ namespace OrderProcessingApp.Domain.Interfaces.Repositories
     public interface IOrderProcessingHistoryRepository
     {
         Task AddOrderHistoryAsync(OrderProcessingHistory orderProcessingHistory);
-        Task<IEnumerable<OrderProcessingHistory>> GetOrderHistoriesAsync();
+        Task<IEnumerable<OrderProcessingHistory>> GetOrderHistoriesAsync(int orderId);
         Task<OrderProcessingHistory> GetOrderHistoryByIdAsync(int orderId);
     }
 }
